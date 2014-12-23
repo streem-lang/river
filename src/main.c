@@ -1,7 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h> 
+#include <assert.h>
+#define NORMAL    "\x1B[0m"
+#define RED       "\x1B[31m"
+#define GREEN     "\x1B[32m"
+#define YELLOW    "\x1B[33m"
+#define BLUE      "\x1B[34m"
+#define MAGNETIA  "\x1B[35m"
+#define CYAN      "\x1B[36m"
+#define WHITE     "\x1B[37m"
 
 #define INSTALL  1
 #define REMOVE   2
@@ -19,53 +27,57 @@ int main(int argc, char *argv[])
   switch (type_of_arg(argv[1])) {
     case INSTALL:
       if (argc == 3) {
-        puts("Downloading project from https://river.heroku.com to temporary folder.....");
-        puts("Installing to main loading area....");
-        puts("Done!");
+        printf("Downloading project from https://river.heroku.com to temporary folder.....\n");
+        printf("Installing to main loading area....\n");
+        printf("%sDone!%s\n", GREEN, NORMAL);
         return 0;
       } else if (argc == 2){
-        puts("Installing current project....");
-        puts("Done!");
+        printf("Installing current project....\n");
+        printf("%sDone!%s\n", GREEN, NORMAL);
         return 0;
       } else {
-        puts("Incorrect number of arguments supplied!");
+        printf("Incorrect number of arguments supplied!\n");
         return 1;
       }
       break;
     case REMOVE:
-      if (argc != 3) { puts("Incorrect number of arguments supplied!"); return 1; }
+      if (argc != 3) { printf("Incorrect number of arguments supplied!\n"); return 1; }
       printf("Removing package %s from main loading area...\n", argv[2]);
-      printf("Are you ABSOLUTELY SURE? ");
+      printf("Are you %sABSOLUTELY SURE%s? ", RED, NORMAL);
       char yn = getchar();
       if (yn == 'Y' || yn == 'y') {
-        puts("Removing chosen project!");
-        puts("Done.");
+        printf("%sRemoving chosen project.%s\n", RED, NORMAL);
+        printf("%sDone!%s\n", GREEN, NORMAL);
       } else {
-        puts("OK. Exiting now....");
+        printf("%sExiting....%s\n", YELLOW, NORMAL);
       }
       break;
     case SETUP:
-      puts("River doesn't even officially exist yet. This is just a dummy.");
+      printf("River doesn't even officially exist yet. This is just a dummy.\n");
+      printf("%sExiting....%s\n", YELLOW, NORMAL);
       break;
     case VERSION:
       printf("%s\n", RIVER_VERSION);
       return 0;
       break;
     case RUN:
-      puts("There's no Streem interpreter yet!");
+      printf("There's no Streem interpreter yet!\n");
+      printf("%sExiting....%s\n", YELLOW, NORMAL);
       break;
     case BIN:
-      puts("There's no Streem interpreter yet!");
+      printf("There's no Streem interpreter yet!\n");
+      printf("%sExiting....%s\n", YELLOW, NORMAL);
       break;
     default:
-      puts("River command usage: $ river [command] [arguments ...]");
-      puts("COMMANDS: ");
-      puts("    install <repo>              Installs package");
-      puts("    remove <name>               Uninstalls package from your machene");
-      puts("    setup                       Interactive walkthrough setting up your River/Streem project");
-      puts("    version                     Shows your your installed River version");
-      puts("    run                         Runs your project");
-      puts("    bin                         Outputs an executable of your project");
+      printf("River command usage: river %s[command]%s [arguments ...]\n", CYAN, NORMAL);
+      printf("COMMANDS: \n");
+      printf("    %sinstall%s <name>              Installs package\n", CYAN, NORMAL);
+      printf("    %sremove%s <name>               Uninstalls package from your machene\n", CYAN, NORMAL);
+      printf("    %ssetup%s                       Interactive walkthrough setting up your River/Streem project\n", CYAN, NORMAL);
+      printf("    %sversion%s                     Shows your your installed River version\n", CYAN, NORMAL);
+      printf("    %srun%s                         Runs your project\n", CYAN, NORMAL);
+      printf("    %sbin%s                         Outprintf an executable of your project\n", CYAN, NORMAL);
+      printf("%sExiting....%s\n", YELLOW, NORMAL);
       return 1;
   }
   return 0;
