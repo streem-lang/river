@@ -38,14 +38,17 @@ func main() {
 			dir := "/usr/local/bin/river-pkgs/" + args[2]
 			err := os.MkdirAll(dir, 0777)
 			if err == nil {
-				fmt.Println("Downloading package from servers....")
+				url := "http://github.com/" + args[1] + "/" + args[2]
+				cyan := color.New(color.FgCyan).SprintFunc()
+
+				fmt.Println("Downloading package from " + cyan(url) + "....")
 
 				binary, err1 := exec.LookPath("git")
 				if err1 != nil {
 					log.Fatal(err1)
 				}
 
-				args := []string{"git", "clone", "http://github.com/" + args[1] + "/" + args[2], dir}
+				args := []string{"git", "clone", url, dir}
 				err2 := syscall.Exec(binary, args, os.Environ())
 				if err2 != nil {
 					log.Fatal(err2)
