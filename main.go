@@ -19,17 +19,13 @@ func help() {
 	fmt.Printf("    river %s                       Installs streem package that you are in\n", cyan("install"))
 	fmt.Printf("    river %s %s                   Removes streem package that you name\n", cyan("remove"), yellow("name"))
 	fmt.Printf("    river %s                         Interactive prompt to setup your project\n", cyan("setup"))
-	fmt.Printf("    river %s                           Runs your project in the src/main.strm\n", cyan("run"))
-	fmt.Printf("    river %s                           Creates an executable of your project in the src/main.strm\n", cyan("bin"))
+	fmt.Printf("    river %s                           Runs the code specified in the main_file option in the strm.json file\n", cyan("run"))
+	fmt.Printf("    river %s                           Creates an executable of the code specified in the main_file option in the strm.json file\n", cyan("bin"))
 	fmt.Printf("    river %s                       Version\n", cyan("version"))
 }
 
-type Config struct {
-	main_file string
-}
-
 func main() {
-	const VERSION = "v0.02"
+	const VERSION = "v0.03"
 	if len(os.Args) <= 1 {
 		color.Red("Not enough arguments supplied!")
 		os.Exit(1)
@@ -69,14 +65,15 @@ func main() {
 					color.Green("BTW: You probably want to remove this package!")
 					log.Fatal("Cannot read config file.")
 				}
-				var m Config
+				var m map[string]interface{}
+
 				err4 := json.Unmarshal(b, &m)
-				fmt.Println(m.main_file)
 				if err4 != nil {
 					color.Red(err4.Error())
 					color.Green("BTW: You probably want to remove this package!")
 					log.Fatal("Cannot parse config file.")
 				}
+				fmt.Println(m["main_file"])
 
 				color.Green("Done!")
 			} else {
