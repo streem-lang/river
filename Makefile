@@ -34,7 +34,7 @@ $(RIVUP_TARGET) : $(RIVUP_OBJ)
 $(RIVDOC_TARGET) : $(RIVDOC_OBJ)
 	gcc $(CFLAGS) -o $@ $^
 
-.c.o:
+.c.o: src/river.h
 	gcc $(CFLAGS) -o $@ -c $<
 
 clean:
