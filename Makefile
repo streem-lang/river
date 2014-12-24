@@ -1,7 +1,6 @@
 all:
-	gcc src/main.c -o bin/river
-	gcc src/update.c -o bin/rivup
-	gcc src/doc.c -o bin/rivdoc
+	go build src/main.go
+	mv ./main bin/river
 
 clean:
 	rm -rf bin/*
