@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
   switch (type_of_arg(argv[1])) {
     case INSTALL:
       if (argc == 3) {
-        printf("Downloading project from https://river.heroku.com to temporary folder.....\n");
+        printf("Downloading project from river repo to temporary folder.....\n");
         printf("Installing to main loading area....\n");
         printf("%sDone!%s\n", GREEN, NORMAL);
         return 0;
