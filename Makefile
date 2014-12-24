@@ -14,8 +14,11 @@ CFLAGS = -Isrc
 
 ifeq (Windows_NT,$(OS))
 RIVER_TARGET := $(RIVER_TARGET).exe
+RIVER_SRC += src/ansicolor-w32.c
 RIVUP_TARGET := $(RIVUP_TARGET).exe
+RIVUP_SRC += src/ansicolor-w32.c
 RIVDOC_TARGET := $(RIVDOC_TARGET).exe
+RIVDOC_SRC += src/ansicolor-w32.c
 endif
 
 .SUFFIXES: .c.o

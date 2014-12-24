@@ -11,3 +11,7 @@
 #define MAGENTA  "\x1B[35m"
 #define CYAN      "\x1B[36m"
 #define WHITE     "\x1B[37m"
+
+#ifdef _WIN32
+# include "ansicolor-w32.h"
+#endif
