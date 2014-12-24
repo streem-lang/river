@@ -7,7 +7,7 @@
 #define GREEN     "\x1B[32m"
 #define YELLOW    "\x1B[33m"
 #define BLUE      "\x1B[34m"
-#define MAGNETIA  "\x1B[35m"
+#define MAGENTA  "\x1B[35m"
 #define CYAN      "\x1B[36m"
 #define WHITE     "\x1B[37m"
 
@@ -72,9 +72,9 @@ int main(int argc, char *argv[])
       printf("River command usage: river %s[command]%s [arguments ...]\n", CYAN, NORMAL);
       printf("COMMANDS: \n");
       printf("    %sinstall%s <name>              Installs package\n", CYAN, NORMAL);
-      printf("    %sremove%s <name>               Uninstalls package from your machene\n", CYAN, NORMAL);
+      printf("    %sremove%s <name>               Uninstalls package from your machine\n", CYAN, NORMAL);
       printf("    %ssetup%s                       Interactive walkthrough setting up your River/Streem project\n", CYAN, NORMAL);
-      printf("    %sversion%s                     Shows your your installed River version\n", CYAN, NORMAL);
+      printf("    %sversion%s                     Shows your installed River version\n", CYAN, NORMAL);
       printf("    %srun%s                         Runs your project\n", CYAN, NORMAL);
       printf("    %sbin%s                         Outprintf an executable of your project\n", CYAN, NORMAL);
       printf("%sExiting....%s\n", YELLOW, NORMAL);
