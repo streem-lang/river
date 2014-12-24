@@ -1,11 +1,13 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/fatih/color"
+	"io"
 	"log"
+	"net/http"
 	"os"
+	"os/exec"
 )
 
 func help() {
@@ -21,11 +23,12 @@ func help() {
 	fmt.Printf("    river %s                    Creates an executaple of your project in the src/main.strm\n", cyan("bin"))
 	fmt.Printf("    river %s                Version\n", cyan("version"))
 }
+
 func main() {
-	VERSION := "v0.01"
+	const VERSION = "v0.01"
 	if len(os.Args) <= 1 {
 		color.Red("Not enough arguments supplied!")
-		log.Fatal("\n")
+		os.Exit(1)
 	}
 	args := os.Args[1:]
 
@@ -33,7 +36,8 @@ func main() {
 	case "install":
 		fmt.Println("Creating package directory..")
 		if len(args) == 2 {
-			err := os.MkdirAll("~/.river-pkgs/"+args[1], 0777)
+			dir := "/usr/local/bin/river-pkgs/" + args[1]
+			err := os.MkdirAll(dir, 0777)
 			if err == nil {
 				fmt.Println("Downloading package from servers....")
 				color.Green("Done!")
@@ -43,18 +47,25 @@ func main() {
 			}
 		} else {
 			color.Red("Not enough arguments supplied!")
-			log.Fatal("\n")
+			os.Exit(1)
 		}
 	case "remove":
-		color.Red("Are you sure? ")
-		reader := bufio.NewReader(os.Stdin)
-		input, _ := reader.ReadString('\n')
+		fmt.Print("Are you sure? ")
+		// disable input buffering
+		exec.Command("stty", "-F", "/dev/tty", "cbreak", "min", "1").Run()
+		// do not display entered characters on the screen
+		exec.Command("stty", "-F", "/dev/tty", "-echo").Run()
 
-		if input == "Y" || input == "y" {
-			os.RemoveAll("~/.river-pkgs/" + args[1])
-			color.Green("Done!")
-		} else {
-			color.Yellow("OK, exiting now...")
+		if len(args) == 2 {
+			input := make([]byte, 1)
+			os.Stdin.Read(input)
+			if string(input[:]) == "Y" || string(input[:]) == "y" {
+				os.RemoveAll("/usr/local/bin/river-pkgs/" + args[1])
+				color.Green("Done!")
+				os.Exit(0)
+			} else {
+				color.Yellow("OK, exiting now...")
+			}
 		}
 	case "version":
 		fmt.Println(VERSION)
