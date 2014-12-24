@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"syscall"
 )
 
 func help() {
@@ -24,7 +23,7 @@ func help() {
 }
 
 func main() {
-	const VERSION = "v0.01"
+	const VERSION = "v0.02"
 	if len(os.Args) <= 1 {
 		color.Red("Not enough arguments supplied!")
 		os.Exit(1)
@@ -43,13 +42,14 @@ func main() {
 
 				fmt.Println("Downloading package from " + cyan(url) + "....")
 
-				binary, err1 := exec.LookPath("git")
+				_, err1 := exec.LookPath("git")
 				if err1 != nil {
 					log.Fatal(err1)
 				}
 
-				args := []string{"git", "clone", url, dir}
-				err2 := syscall.Exec(binary, args, os.Environ())
+				cmd := exec.Command("git", "clone", url, dir)
+				err2 := cmd.Run()
+
 				if err2 != nil {
 					log.Fatal(err2)
 				}
@@ -87,7 +87,7 @@ func main() {
 	case "help":
 		help()
 	default:
-		color.Red("Unknown command!\n\n")
+		color.Red("Unknown command!\n")
 		help()
 	}
 }
