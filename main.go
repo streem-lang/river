@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/fatih/color"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -20,6 +22,10 @@ func help() {
 	fmt.Printf("    river %s                           Runs your project in the src/main.strm\n", cyan("run"))
 	fmt.Printf("    river %s                           Creates an executable of your project in the src/main.strm\n", cyan("bin"))
 	fmt.Printf("    river %s                       Version\n", cyan("version"))
+}
+
+type Config struct {
+	main_file string
 }
 
 func main() {
@@ -44,15 +50,34 @@ func main() {
 
 				_, err1 := exec.LookPath("git")
 				if err1 != nil {
-					log.Fatal(err1)
+					log.Fatal(err1.Error())
 				}
 
 				cmd := exec.Command("git", "clone", url, dir)
 				err2 := cmd.Run()
 
 				if err2 != nil {
-					log.Fatal(err2)
+					color.Red(err2.Error())
+					color.Green("BTW: You probably want to remove this package!")
+					log.Fatal("Cannot clone from github!")
 				}
+
+				b, err3 := ioutil.ReadFile(dir + "/strm.json")
+
+				if err3 != nil {
+					color.Red(err3.Error())
+					color.Green("BTW: You probably want to remove this package!")
+					log.Fatal("Cannot read config file.")
+				}
+				var m Config
+				err4 := json.Unmarshal(b, &m)
+				fmt.Println(m.main_file)
+				if err4 != nil {
+					color.Red(err4.Error())
+					color.Green("BTW: You probably want to remove this package!")
+					log.Fatal("Cannot parse config file.")
+				}
+
 				color.Green("Done!")
 			} else {
 				color.Red("ERROR!")
