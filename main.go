@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/fatih/color"
-	"io"
 	"log"
-	"net/http"
 	"os"
 	"os/exec"
 )
@@ -15,13 +13,13 @@ func help() {
 	cyan := color.New(color.FgCyan).SprintFunc()
 
 	fmt.Printf("river usage: river %s %s\n", cyan("[command]"), yellow("[arguments ...]"))
-	fmt.Printf("    river %s %s           Installs streem package with same name\n", cyan("install"), yellow("name"))
-	fmt.Printf("    river %s                Installs streem package that you are in\n", cyan("install"))
-	fmt.Printf("    river %s %s            Removes streem package that you name\n", cyan("remove"), yellow("name"))
-	fmt.Printf("    river %s                  Interactive prompt to setup your project\n", cyan("setup"))
-	fmt.Printf("    river %s                    Runs your project in the src/main.strm\n", cyan("run"))
-	fmt.Printf("    river %s                    Creates an executaple of your project in the src/main.strm\n", cyan("bin"))
-	fmt.Printf("    river %s                Version\n", cyan("version"))
+	fmt.Printf("    river %s %s           Installs streem package with same name\n", cyan("install"), yellow("author/name"))
+	fmt.Printf("    river %s                       Installs streem package that you are in\n", cyan("install"))
+	fmt.Printf("    river %s %s                   Removes streem package that you name\n", cyan("remove"), yellow("name"))
+	fmt.Printf("    river %s                         Interactive prompt to setup your project\n", cyan("setup"))
+	fmt.Printf("    river %s                           Runs your project in the src/main.strm\n", cyan("run"))
+	fmt.Printf("    river %s                           Creates an executable of your project in the src/main.strm\n", cyan("bin"))
+	fmt.Printf("    river %s                       Version\n", cyan("version"))
 }
 
 func main() {
