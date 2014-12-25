@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"github.com/fatih/color"
@@ -8,6 +9,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func help() {
@@ -22,6 +24,147 @@ func help() {
 	fmt.Printf("    river %s                           Runs the code specified in the main_file option in the strm.json file\n", cyan("run"))
 	fmt.Printf("    river %s                           Creates an executable of the code specified in the main_file option in the strm.json file\n", cyan("bin"))
 	fmt.Printf("    river %s                       Version\n", cyan("version"))
+}
+func read(p string) (error, string) {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print(p)
+	dat, err := reader.ReadString('\n')
+	return err, dat
+}
+
+func read_license() []byte {
+	lic := []byte(``)
+	err, license := read("Enter project license type (GPL, AGPL3, GPL2, GPL3, APACHE, MIT): ")
+	license = strings.TrimSpace(license)
+	if err != nil {
+		panic(err)
+	}
+	switch license {
+	case "GPL":
+		lic = []byte(`
+		one line to give the program's name and a brief description.
+		Copyright (C) 2014 John Doe
+
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation, either version 3 of the License, or
+		(at your option) any later version.
+
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+		GNU General Public License for more details.
+
+		You should have received a copy of the GNU General Public License
+		along with this program.  If not, see <http://www.gnu.org/licenses/>.
+		`)
+		break
+	case "MIT":
+		lic = []byte(`
+		one line to give the program's name and a brief description
+		Copyright (C) 2014 John Doe
+
+		Permission is hereby granted, free of charge, to any person obtaining
+		a copy of this software and associated documentation files (the "Software"),
+		to deal in the Software without restriction, including without limitation
+		the rights to use, copy, modify, merge, publish, distribute, sublicense,
+		and/or sell copies of the Software, and to permit persons to whom the
+		Software is furnished to do so, subject to the following conditions:
+
+		The above copyright notice and this permission notice shall be included
+		in all copies or substantial portions of the Software.
+
+		THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+		EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+		OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+		IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+		DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+		TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+		OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+		`)
+		break
+	case "AGPL3":
+		lic = []byte(`
+		one line to give the program's name and a brief description.
+		Copyright (C) 2014 John Doe
+
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU Affero General Public License as
+		published by the Free Software Foundation, either version 3 of the
+		License, or (at your option) any later version.
+
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+		GNU Affero General Public License for more details.
+
+		You should have received a copy of the GNU Affero General Public License
+		along with this program.  If not, see <http://www.gnu.org/licenses/>.
+		`)
+		break
+	case "GPL2":
+		lic = []byte(`
+		One line to give the program's name and a brief description.
+		Copyright (C) 2014 John Doe
+
+		This program is free software; you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation; either version 2 of the License, or
+		(at your option) any later version.
+
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+		GNU General Public License for more details.
+
+		You should have received a copy of the GNU General Public License
+		along with this program; if not, see <http://www.gnu.org/licenses/>.
+		`)
+		break
+	case "GPL3":
+		lic = []byte(`
+		one line to give the program's name and a brief description.
+		Copyright (C) 2014 John Doe
+
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation, either version 3 of the License, or
+		(at your option) any later version.
+
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+		GNU General Public License for more details.
+
+		You should have received a copy of the GNU General Public License
+		along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+		`)
+	case "APACHE":
+		lic = []byte(`
+		one line to give the program's name and a brief description
+		Copyright 2014 John Doe
+
+		Licensed under the Apache License, Version 2.0 (the "License");
+		you may not use this file except in compliance with the License.
+		You may obtain a copy of the License at
+
+		http://www.apache.org/licenses/LICENSE-2.0
+
+		Unless required by applicable law or agreed to in writing, software
+		distributed under the License is distributed on an "AS IS" BASIS,
+		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+		See the License for the specific language governing permissions and
+		limitations under the License.
+		`)
+		break
+	default:
+		color.Red("Unknown licence version.")
+		lic = read_license()
+		break
+	}
+	return lic
 }
 
 func main() {
@@ -84,6 +227,7 @@ func main() {
 			color.Red("Not enough arguments supplied!")
 			os.Exit(1)
 		}
+		break
 	case "remove":
 		fmt.Print("Are you sure? ")
 		// disable input buffering
@@ -102,14 +246,43 @@ func main() {
 				color.Yellow("OK, exiting now...")
 			}
 		}
+		break
 	case "version":
 		fmt.Println(VERSION)
+		break
 	case "run":
+		color.Red("Sorry, the streem language isn't even implemented yet.")
+		break
 	case "bin":
+		color.Red("Sorry, the streem language isn't even implemented yet.")
+		break
+	case "setup":
+		if len(args) != 2 {
+			color.Red("Wrong number of arguments!")
+			os.Exit(1)
+		}
+		name := args[1]
+		os.MkdirAll(name+"/src/", 0777)
+
+		nf, _ := os.Create(name + "/src/main.strm")
+		nf.Write([]byte(`"Hello, Project!" | STDOUT`))
+		defer nf.Close()
+
+		lic := read_license()
+		f, err5 := os.Create(name + "/LICENSE.txt")
+		f.Write(lic)
+		if err5 != nil {
+			color.Red("Could not open license file for writing!")
+			os.Exit(1)
+		}
+		defer f.Close()
+		break
 	case "help":
 		help()
+		break
 	default:
 		color.Red("Unknown command!\n")
 		help()
+		break
 	}
 }
