@@ -20,11 +20,12 @@ func help() {
 	fmt.Printf("    river %s %s           Installs streem package with same name\n", cyan("install"), yellow("author name"))
 	fmt.Printf("    river %s                       Installs streem package that you are in\n", cyan("install"))
 	fmt.Printf("    river %s %s                   Removes streem package that you name\n", cyan("remove"), yellow("name"))
-	fmt.Printf("    river %s                         Interactive prompt to setup your project\n", cyan("setup"))
+	fmt.Printf("    river %s %s                    Interactive prompt to setup your project\n", cyan("setup"), yellow("name"))
 	fmt.Printf("    river %s                           Runs the code specified in the main_file option in the strm.json file\n", cyan("run"))
 	fmt.Printf("    river %s                           Creates an executable of the code specified in the main_file option in the strm.json file\n", cyan("bin"))
 	fmt.Printf("    river %s                       Version\n", cyan("version"))
 }
+
 func read(p string) (error, string) {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print(p)
@@ -32,13 +33,7 @@ func read(p string) (error, string) {
 	return err, dat
 }
 
-func read_license() []byte {
-	lic := []byte(``)
-	err, license := read("Enter project license type (GPL, AGPL3, GPL2, GPL3, APACHE, MIT): ")
-	license = strings.TrimSpace(license)
-	if err != nil {
-		panic(err)
-	}
+func read_license(license string) (lic []byte, valed bool) {
 	switch license {
 	case "GPL":
 		lic = []byte(`
@@ -161,10 +156,10 @@ func read_license() []byte {
 		break
 	default:
 		color.Red("Unknown licence version.")
-		lic = read_license()
+		return lic, false
 		break
 	}
-	return lic
+	return lic, true
 }
 
 func main() {
@@ -268,7 +263,12 @@ func main() {
 		nf.Write([]byte(`"Hello, Project!" | STDOUT`))
 		defer nf.Close()
 
-		lic := read_license()
+		_, license := read("Enter project license type (GPL, AGPL3, GPL2, GPL3, APACHE, MIT): ")
+		lic, valed := read_license(strings.TrimSpace(license))
+		for !valed {
+			_, license = read("Enter project license type (GPL, AGPL3, GPL2, GPL3, APACHE, MIT): ")
+			lic, valed = read_license(strings.TrimSpace(license))
+		}
 		f, err5 := os.Create(name + "/LICENSE.txt")
 		f.Write(lic)
 		if err5 != nil {
@@ -276,6 +276,15 @@ func main() {
 			os.Exit(1)
 		}
 		defer f.Close()
+
+		_, main_file := read("Enter location of main file in your project (src/main.strm): ")
+		cf, _ := os.Create(name + "/strm.json")
+		if main_file == "\n" {
+			main_file = "src/main.strm"
+		}
+		cf.Write([]byte("{\n" + "  \"main_file\": \"" + strings.TrimSpace(main_file) + "\",\n  \"license\": \"" + strings.TrimSpace(license) + "\"\n}\n"))
+		defer cf.Close()
+
 		break
 	case "help":
 		help()
